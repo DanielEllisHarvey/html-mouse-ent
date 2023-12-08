@@ -1,0 +1,63 @@
+<html>
+    <script>
+        var active = true;
+        var a = 102n;
+        var b = 0;
+        var c = 0;
+        var d = 0n;
+        var e = 0;
+        var arr = [];
+
+        function isPrime(x) {
+            // console.log(x, Math.floor(Math.sqrt(Number(x)+1)+1));
+            let sqrt_x = BigInt(Math.floor(Math.sqrt(Number(x)+1)+1));
+            if(x%2n == 0n) { return false; };
+            for(let i=3n; i<sqrt_x; i=i+2n) {
+                if(x%i == 0n) { console.log(i); a+=i; return false; }
+            }
+            return true;
+        }
+        document.onkeydown = (event) => {
+            if(active) {
+                d += BigInt(event.keyCode << 8)
+            }
+            if(event.key === "Enter") active = !active;
+        }
+        document.onmousemove = (event) => {
+            if(active) {
+                b = Number(event.clientX+event.clientY);
+                c = ((c+(event.clientX^event.clientY)) << 1) & 0x7fffffff;
+                e = (e+1);
+                a = (a+BigInt(b^c+e)^d + BigInt(Date.now^c));
+            }
+        }
+        setInterval(() => {
+            if(active) {
+                a = (a+BigInt(b^c+e)^d + BigInt(Date.now^c));
+                if (a%2n == 0n) a=a+1n;
+                if(isPrime(a)) {
+                    arr.push(a);
+                    document.getElementById("primes").innerHTML = arr.join("\n");
+                }
+            }
+        }, 10);
+        function mkDownload(text) {
+		    // text = text.replace("<br><br>", "");
+		    text = arr.join(",");
+		    var blob = new Blob([text], {type: "text/plain"});
+		    if (downloadURL !== null) window.URL.revokeObjectURL(downloadURL);
+		    var downloadURL    = window.URL.createObjectURL(blob);
+		    let dlButton       = document.getElementById("downloadButton");
+		    dlButton.href      = downloadURL;
+		    let fName          = mkFileName();
+		    dlButton.download  = fName;
+		    dlButton.innerHTML = fName;
+            document.getElementById("primes").innerHTML = "";
+            arr = [];
+		}
+		function mkFileName() { return arr.length; }
+    </script>
+    <body>
+        <p id="primes"></p>
+        <button onclick=mkDownload(arr)>download</button><a id="downloadButton"></a>
+    </body>
