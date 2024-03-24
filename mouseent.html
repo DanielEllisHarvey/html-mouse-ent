@@ -8,15 +8,6 @@
         var e = 0;
         var arr = [];
 
-        function isPrime(x) {
-            // console.log(x, Math.floor(Math.sqrt(Number(x)+1)+1));
-            let sqrt_x = BigInt(Math.floor(Math.sqrt(Number(x)+1)+1));
-            if(x%2n == 0n) { return false; };
-            for(let i=3n; i<sqrt_x; i=i+2n) {
-                if(x%i == 0n) { console.log(i); a+=i; return false; }
-            }
-            return true;
-        }
         document.onkeydown = (event) => {
             if(active) {
                 d += BigInt(event.keyCode << 8)
@@ -34,11 +25,10 @@
         setInterval(() => {
             if(active) {
                 a = (a+BigInt(b^c+e)^d + BigInt(Date.now^c));
-                if (a%2n == 0n) a=a+1n;
-                if(isPrime(a)) {
-                    arr.push(a);
-                    document.getElementById("primes").innerHTML = arr.join("\n");
-                }
+		if(Date.now&1) {
+                	arr.push(a);
+                	document.getElementById("nums").innerHTML = arr.join("\n");
+		}
             }
         }, 10);
         function mkDownload(text) {
@@ -58,6 +48,6 @@
 		function mkFileName() { return arr.length; }
     </script>
     <body>
-        <p id="primes"></p>
+        <p id="nums"></p>
         <button onclick=mkDownload(arr)>download</button><a id="downloadButton"></a>
     </body>
