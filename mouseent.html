@@ -1,6 +1,6 @@
 <html>
     <script>
-        var active = true;
+        var active = false;
         var a = 102n;
         var b = 0;
         var c = 0;
@@ -15,25 +15,26 @@
             if(event.key === "Enter") active = !active;
         }
         document.onmousemove = (event) => {
+            a++;
             if(active) {
                 b = Number(event.clientX+event.clientY);
                 c = ((c+(event.clientX^event.clientY)) << 1) & 0x7fffffff;
                 e = (e+1);
-                a = (a+BigInt(b^c+e)^d + BigInt(Date.now^c));
+                a = (a+BigInt(b^c+e)^d + BigInt(Date.now()^c));
             }
         }
         setInterval(() => {
             if(active) {
                 a = (a+BigInt(b^c+e)^d + BigInt(Date.now^c));
-		if(Date.now&1) {
-                	arr.push(a);
-                	document.getElementById("nums").innerHTML = arr.join("\n");
-		}
+		// if(Date.now() & 1) {
+                arr.push((a % 255n).toString(16));
+                document.getElementById("nums").innerHTML = arr.join("\n");
+		// }
             }
         }, 10);
         function mkDownload(text) {
 		    // text = text.replace("<br><br>", "");
-		    text = arr.join(",");
+		    text = arr.join("");
 		    var blob = new Blob([text], {type: "text/plain"});
 		    if (downloadURL !== null) window.URL.revokeObjectURL(downloadURL);
 		    var downloadURL    = window.URL.createObjectURL(blob);
@@ -42,7 +43,7 @@
 		    let fName          = mkFileName();
 		    dlButton.download  = fName;
 		    dlButton.innerHTML = fName;
-            document.getElementById("primes").innerHTML = "";
+            document.getElementById("nums").innerHTML = "";
             arr = [];
 		}
 		function mkFileName() { return arr.length; }
